@@ -1,0 +1,1093 @@
+:root{
+  --cyan:#7fdde0;
+  --dim:rgba(127,221,224,.18);
+}
+
+body{
+  margin:0;
+  height:100vh;
+  background:radial-gradient(circle at center,#020607 0%,#000 65%);
+  font-family:"JetBrains Mono",monospace;
+  color:var(--cyan);
+  overflow:hidden;
+}
+
+/* GRID */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+  background-size:64px 64px;
+}
+
+/* LEFT HUD */
+#leftHud{
+  position:absolute;
+  top:16px;
+  left:16px;
+  font-size:11px;
+  opacity:.8;
+}
+#timeText{font-size:26px;}
+#batteryBox{margin-top:6px}
+.divider{
+  height:1px;
+  background:var(--dim);
+  margin:8px 0;
+}
+.mini{opacity:.6}
+
+/* MODE */
+#modeLabel{
+  position:absolute;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:11px;
+  letter-spacing:2px;
+  opacity:.6;
+}
+
+/* CORE */
+#core-wrapper{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:220px;
+  height:220px;
+  transform:translate(-50%,-50%);
+  opacity:0;
+}
+.system-ready #core-wrapper{
+  opacity:1;
+  transition:opacity 1.4s ease;
+}
+.ring{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:1px solid var(--dim);
+}
+.mid-ring{inset:22px;border-style:dashed}
+.inner-ring{inset:44px}
+
+#energy-core{
+  position:absolute;
+  inset:62px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(127,221,224,.5),#000 70%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  letter-spacing:2px;
+}
+
+/* SYSTEM FEED */
+#systemFeed{
+  position:absolute;
+  left:16px;
+  bottom:90px;
+  font-size:10px;
+  opacity:.55;
+  line-height:1.4;
+}
+
+/* WAKE */
+#wakeBtn{
+  position:absolute;
+  bottom:70px;
+  left:16px;
+  padding:6px 14px;
+  background:rgba(127,221,224,.08);
+  border:1px solid var(--dim);
+  color:var(--cyan);
+  font-size:11px;
+  cursor:pointer;
+  opacity:.8;
+}
+#wakeBtn:hover{opacity:1}
+
+/* STATUS */
+.status{
+  position:absolute;
+  bottom:24px;
+  width:100%;
+  text-align:center;
+  font-size:11px;
+  opacity:.6;
+}
+
+/* ================= SUBTLE ANIMATIONS ================= */
+
+/* Core breathing (very slow) */
+@keyframes coreBreath {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+
+.system-ready #energy-core {
+  animation: coreBreath 6s ease-in-out infinite;
+}
+
+/* Ring micro-drift (almost invisible) */
+@keyframes ringDrift {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(1deg); }
+}
+
+.system-ready .outer-ring {
+  animation: ringDrift 18s ease-in-out infinite alternate;
+}
+.system-ready .mid-ring {
+  animation: ringDrift 26s ease-in-out infinite alternate-reverse;
+}
+.system-ready .inner-ring {
+  animation: ringDrift 34s ease-in-out infinite alternate;
+}
+
+/* HUD fade-in (prevents harsh appearance) */
+#leftHud,
+#modeLabel,
+#systemFeed,
+.status {
+  opacity: 0;
+  animation: hudFade 1.2s ease forwards;
+}
+
+@keyframes hudFade {
+  to { opacity: .8; }
+}
+
+/* WAKE button soft pulse (idle only) */
+@keyframes wakePulse {
+  0%   { box-shadow: 0 0 0 rgba(127,221,224,0); }
+  50%  { box-shadow: 0 0 8px rgba(127,221,224,.25); }
+  100% { box-shadow: 0 0 0 rgba(127,221,224,0); }
+}
+
+#wakeBtn {
+  animation: wakePulse 4s ease-in-out infinite;
+}
+
+/* ===== EXTRA REALISM LAYERS ===== */
+
+/* 1. Scanline sweep (very subtle) */
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100vh; }
+}
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255,255,255,0.02) 50%,
+    transparent 100%
+  );
+  background-size:100% 120px;
+  animation:scanline 20s linear infinite;
+  pointer-events:none;
+  opacity:.15;
+}
+
+/* 2. Network status dot */
+#netDot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:#4caf50;
+  display:inline-block;
+  margin-right:6px;
+  animation:pulseDot 3s infinite;
+}
+@keyframes pulseDot{
+  0%,100%{opacity:.4}
+  50%{opacity:1}
+}
+
+/* 3. CPU load bar */
+#cpuBar{
+  width:80px;height:4px;
+  background:rgba(127,221,224,.15);
+  margin-top:6px;
+  overflow:hidden;
+}
+#cpuBar span{
+  display:block;
+  height:100%;
+  width:20%;
+  background:var(--cyan);
+  transition:width .6s ease;
+}
+
+/* 4. Divider enhancement */
+.divider{
+  height:1px;
+  background:linear-gradient(
+    to right,
+    transparent,
+    rgba(127,221,224,.3),
+    transparent
+  );
+}
+
+/* 5. Idle dim */
+.idle body{
+  opacity:.85;
+}
+
+/* 6. Status blink */
+.blink{
+  animation:blink .6s ease;
+}
+@keyframes blink{
+  50%{opacity:.3}
+}
+
+/* 7. Alert flash */
+.alert{
+  animation:alertFlash .8s ease;
+}
+@keyframes alertFlash{
+  0%{background:none}
+  50%{background:rgba(196,60,60,.08)}
+  100%{background:none}
+}
+
+/* ===== PHASE 2 REALISM ===== */
+
+/* 11. Heartbeat pulse */
+@keyframes heartbeat {
+  0% { box-shadow: none; }
+  50% { box-shadow: 0 0 6px rgba(127,221,224,.25); }
+  100% { box-shadow: none; }
+}
+.system-ready #energy-core {
+  animation: coreBreath 6s ease-in-out infinite,
+             heartbeat 4s ease-in-out infinite;
+}
+
+/* 12. Seconds ticker */
+#secDot {
+  display:inline-block;
+  margin-left:4px;
+  opacity:.6;
+  animation: blinkSec 1s steps(1) infinite;
+}
+@keyframes blinkSec { 50%{opacity:0} }
+
+/* 13. Integrity badge */
+#integrity {
+  margin-top:6px;
+  font-size:10px;
+  opacity:.6;
+}
+
+/* 14. Low power label */
+#lowPower {
+  font-size:10px;
+  color:#cfa94a;
+  opacity:.7;
+  display:none;
+}
+.idle #lowPower { display:block }
+
+/* 15. Focus ring */
+.focus #energy-core {
+  box-shadow:
+    inset 0 0 16px rgba(127,221,224,.6),
+    0 0 14px rgba(127,221,224,.4);
+}
+
+/* 16. Cooldown fade */
+.cooldown {
+  opacity:.4 !important;
+  pointer-events:none;
+}
+
+/* ================= HYPER BUTTON ================= */
+
+#hyperBtn {
+  position: absolute;
+  bottom: 70px;
+  right: 16px;
+  padding: 6px 14px;
+  background: rgba(196,60,60,0.12);
+  border: 1px solid rgba(196,60,60,0.5);
+  color: #c43c3c;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  opacity: .8;
+}
+
+#hyperBtn:hover { opacity: 1; }
+
+/* Hyper visual emphasis */
+.hyper #core-wrapper {
+  filter: brightness(1.15);
+}
+
+.hyper .ring {
+  border-color: rgba(196,60,60,.6) !important;
+}
+
+/* ===== PHASE 3 MICRO DETAILS ===== */
+
+/* 26. Idle core halo */
+.system-ready #energy-core::after{
+  content:"";
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+  border:1px solid rgba(127,221,224,.15);
+}
+.hyper #energy-core::after{ display:none }
+
+/* 27. Data packet blink */
+#packetDot{
+  width:5px;height:5px;
+  background:var(--cyan);
+  border-radius:50%;
+  display:inline-block;
+  margin-left:6px;
+  opacity:.2;
+  animation:packetBlink 2s infinite;
+}
+@keyframes packetBlink{
+  50%{opacity:.8}
+}
+
+/* 28. Confidence bar */
+#confidence{
+  width:120px;height:3px;
+  background:rgba(127,221,224,.15);
+  margin-top:8px;
+}
+#confidence span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:var(--cyan);
+  transition:width 1s linear;
+}
+
+/* 29. Alert history */
+#alertDot{
+  width:6px;height:6px;
+  background:#c43c3c;
+  border-radius:50%;
+  display:none;
+  margin-left:6px;
+}
+
+/* ===== ANIMATION PACK ===== */
+
+/* A1. Boot power-up */
+@keyframes powerUp {
+  from { box-shadow: none; }
+  to { box-shadow: inset 0 0 18px rgba(127,221,224,.6); }
+}
+.system-ready #energy-core {
+  animation: powerUp 1.2s ease forwards;
+}
+
+/* A2. Core micro-rotation */
+@keyframes microRotate {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(.5deg); }
+  100% { transform: rotate(0deg); }
+}
+.system-ready #energy-core span {
+  display:inline-block;
+  animation: microRotate 10s ease-in-out infinite;
+}
+
+/* A3. Ring snap */
+@keyframes snapIn {
+  0% { transform: scale(.96); }
+  100% { transform: scale(1); }
+}
+.system-ready .ring {
+  animation: snapIn .6s ease-out;
+}
+
+/* A4. Feed slide-in */
+#systemFeed div {
+  animation: feedSlide .5s ease forwards;
+}
+@keyframes feedSlide {
+  from { transform: translateX(-6px); opacity:0; }
+  to { transform: translateX(0); opacity:1; }
+}
+
+/* A5. Status breathing */
+@keyframes statusBreath {
+  0%,100% { opacity:.6; }
+  50% { opacity:1; }
+}
+.status {
+  animation: statusBreath 5s ease-in-out infinite;
+}
+
+/* A6. Hyper ripple */
+@keyframes hyperRipple {
+  0% { box-shadow: 0 0 0 rgba(196,60,60,0); }
+  50% { box-shadow: 0 0 16px rgba(196,60,60,.35); }
+  100% { box-shadow: 0 0 0 rgba(196,60,60,0); }
+}
+.hyper #core-wrapper {
+  animation: hyperRipple 1.2s ease;
+}
+
+/* A7. Wake confirm */
+@keyframes wakeFlash {
+  0% { background:rgba(127,221,224,.1); }
+  50% { background:rgba(127,221,224,.35); }
+  100% { background:rgba(127,221,224,.1); }
+}
+.wakeFlash {
+  animation: wakeFlash .4s ease;
+}
+
+/* A8. Divider scan */
+@keyframes dividerScan {
+  from { background-position:0 0; }
+  to { background-position:100% 0; }
+}
+.divider {
+  background-size:200% 100%;
+  animation: dividerScan 1.2s ease forwards;
+}
+
+/* A9. Idle drift */
+@keyframes idleDrift {
+  0% { transform: translate(0,0); }
+  50% { transform: translate(1px,1px); }
+  100% { transform: translate(0,0); }
+}
+.system-ready body {
+  animation: idleDrift 30s ease-in-out infinite;
+}
+
+/* A10. Hyper shutdown fade */
+.hyperEnd {
+  animation: fadeOut .8s ease;
+}
+@keyframes fadeOut {
+  to { opacity:.85; }
+}
+
+/* ===== MOTION MATRIX (20 ANIMATIONS) ===== */
+
+/* A31 – Core shimmer */
+@keyframes shimmer {
+  0%,100% { filter: brightness(1); }
+  50% { filter: brightness(1.08); }
+}
+.system-ready #energy-core {
+  animation: shimmer 7s ease-in-out infinite;
+}
+
+/* A32 – Core depth */
+@keyframes depthPulse {
+  0%,100% { box-shadow: inset 0 0 12px rgba(127,221,224,.35); }
+  50% { box-shadow: inset 0 0 18px rgba(127,221,224,.5); }
+}
+.system-ready #energy-core {
+  animation: shimmer 7s ease-in-out infinite,
+             depthPulse 9s ease-in-out infinite;
+}
+
+/* A33 – Inner ring drift */
+@keyframes phaseDrift {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(.8deg); }
+}
+.system-ready .inner-ring {
+  animation: phaseDrift 40s ease-in-out infinite alternate;
+}
+
+/* A34 – Outer tick jitter */
+@keyframes tickJitter {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(.15deg); }
+}
+.system-ready .outer-ring {
+  animation: tickJitter 12s ease-in-out infinite;
+}
+
+/* A35 – Core text flicker */
+@keyframes focusFlicker {
+  0%,98% { opacity:1; }
+  99% { opacity:.85; }
+}
+.system-ready #energy-core span {
+  animation: focusFlicker 18s infinite;
+}
+
+/* A36 – Clock slide */
+@keyframes clockSlide {
+  from { transform: translateY(-2px); opacity:0; }
+  to { transform: translateY(0); opacity:1; }
+}
+#timeText { animation: clockSlide .4s ease; }
+
+/* A37 – Battery blink */
+@keyframes batteryBlink {
+  50% { opacity:.4; }
+}
+#batteryLevel {
+  animation: batteryBlink .6s ease;
+}
+
+/* A38 – Status type reveal */
+@keyframes typeReveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.status {
+  animation: typeReveal 1s ease;
+}
+
+/* A39 – Mode underline sweep */
+#modeLabel::after{
+  content:"";
+  display:block;
+  height:1px;
+  background:rgba(127,221,224,.4);
+  animation: underline 1.2s ease;
+}
+@keyframes underline{
+  from{width:0}
+  to{width:100%}
+}
+
+/* A40 – Caret blink */
+@keyframes caret {
+  50% { opacity:0; }
+}
+#systemFeed::after{
+  content:"▌";
+  animation: caret 1s steps(1) infinite;
+}
+
+/* A41 – Button press */
+button:active {
+  transform: scale(.96);
+}
+
+/* A42 – Button rebound */
+button {
+  transition: transform .15s ease;
+}
+
+/* A43 – Idle glow decay */
+@keyframes glowDecay {
+  to { box-shadow:none; }
+}
+#wakeBtn {
+  animation: glowDecay 6s ease forwards;
+}
+
+/* A44 – Hyper warning */
+@keyframes warnPulse {
+  50% { box-shadow:0 0 10px rgba(196,60,60,.4); }
+}
+#hyperBtn {
+  animation: warnPulse 3s ease-in-out infinite;
+}
+
+/* A45 – Data grain */
+body::after{
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,.02) 0,
+      rgba(255,255,255,.02) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+}
+
+/* A46 – HUD parallax */
+.system-ready body {
+  animation: idleDrift 35s ease-in-out infinite;
+}
+
+/* A47 – Alert line */
+@keyframes alertLine {
+  from{width:0}
+  to{width:100%}
+}
+.alert::before{
+  content:"";
+  height:1px;
+  background:#c43c3c;
+  display:block;
+  animation: alertLine .6s ease;
+}
+
+/* A48 – Heartbeat tick */
+@keyframes tick {
+  50%{opacity:.6}
+}
+.system-ready #energy-core {
+  animation: shimmer 7s infinite,
+             depthPulse 9s infinite,
+             tick 2.8s infinite;
+}
+
+/* A49 – Re-center correction */
+@keyframes recenter {
+  to { transform: translate(0,0); }
+}
+.system-ready {
+  animation: recenter .4s ease;
+}
+
+/* A50 – Calm return */
+.calm {
+  transition: all 1.4s ease;
+}
+
+/* ===== UI EFFECTS x30 ===== */
+
+/* E1 Vignette */
+body::before{
+  box-shadow: inset 0 0 120px rgba(0,0,0,.55);
+}
+
+/* E2 Edge fade */
+body{
+  mask-image: radial-gradient(circle at center, #000 60%, transparent 100%);
+}
+
+/* E3 Focus contrast */
+.focus *{ filter: contrast(1.05); }
+
+/* E4 Panel separation */
+#leftHud, #systemFeed{
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+/* E5 Text halo */
+*{ text-shadow: 0 0 6px rgba(127,221,224,.06); }
+
+/* E6 Rare AA shimmer */
+@keyframes aaShimmer{50%{filter:brightness(1.03)}}
+.system-ready{animation:aaShimmer 20s infinite}
+
+/* E7 Click ripple */
+.ripple{position:relative;overflow:hidden}
+.ripple::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle,rgba(127,221,224,.25),transparent 60%);
+  opacity:0;animation:rip .4s ease;
+}
+@keyframes rip{to{opacity:1}}
+
+/* E8 Hover intent */
+button{transition:opacity .15s ease .08s}
+
+/* E9 Acknowledge flash */
+.ack{animation:ack .12s}
+@keyframes ack{to{filter:brightness(1.2)}}
+
+/* E10 Disabled desat */
+.cooldown{filter:grayscale(.6)}
+
+/* E11 Cooldown sheen */
+.cooldown{background-image:linear-gradient(120deg,transparent,rgba(255,255,255,.15),transparent)}
+
+/* E12 Success tick */
+.ok{animation:ok .3s}
+@keyframes ok{50%{opacity:.6}}
+
+/* E13 Timestamp glow */
+#systemFeed b{color:var(--cyan);opacity:.8}
+
+/* E14 Data arrows */
+.dataIO::after{content:"⇄";opacity:.3;margin-left:6px}
+
+/* E15 Caret slow */
+#systemFeed::after{animation-duration:1.4s}
+
+/* E16 Divider mod */
+.divider{opacity:.4}
+
+/* E17 Confidence easing */
+#confidence span{transition-timing-function:cubic-bezier(.22,.61,.36,1)}
+
+/* E18 Packet loss hint */
+@keyframes loss{99%{opacity:1}100%{opacity:.7}}
+#packetDot{animation:packetBlink 2s infinite,loss 18s infinite}
+
+/* E19 Micro parallax */
+.parallax{transform:translateZ(0)}
+
+/* E20 Gravity correction */
+.system-ready{will-change:transform}
+
+/* E21 Idle settle */
+.idle *{transition:all .6s ease}
+
+/* E22 Focus ring */
+.focus #energy-core{outline:1px solid rgba(127,221,224,.25)}
+
+/* E23 Hyper pre-alert */
+.preHyper{animation:warnPulse .8s ease}
+
+/* E24 Hyper exit wash */
+.hyperEnd{background:radial-gradient(circle,rgba(255,255,255,.04),transparent 60%)}
+
+/* E25 Ambient grain */
+body::after{opacity:.06}
+
+/* E26 Scan noise tick */
+@keyframes noise{50%{opacity:.04}}
+body::after{animation:noise 12s infinite}
+
+/* E27 Temp tint */
+.warm{filter:hue-rotate(8deg)}
+.cool{filter:hue-rotate(-6deg)}
+
+/* E28 Clock colon breathe */
+#secDot{animation:blinkSec 1.4s steps(1) infinite}
+
+/* E29 Label tracking */
+button{letter-spacing:.08em}
+
+/* E30 Screen wake sparkle */
+@keyframes sparkle{from{opacity:0}to{opacity:.2}}
+.system-ready::after{animation:sparkle .6s ease}
+
+/* ===== ASSEMBLY ANIMATION ===== */
+
+/* Initial hidden state */
+#core-wrapper,
+.ring,
+#energy-core,
+#leftHud,
+#modeLabel,
+#systemFeed {
+  opacity: 0;
+}
+
+/* Visible after assembly */
+.system-ready #leftHud,
+.system-ready #modeLabel,
+.system-ready #systemFeed {
+  animation: hudIn .8s ease forwards;
+  animation-delay: 2.2s;
+}
+
+@keyframes hudIn {
+  to { opacity: .8; }
+}
+
+/* Ring assemble */
+@keyframes ringIn {
+  from { opacity: 0; transform: scale(.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.system-ready .outer-ring {
+  animation: ringIn .6s ease forwards;
+}
+.system-ready .mid-ring {
+  animation: ringIn .6s ease forwards;
+  animation-delay: .4s;
+}
+.system-ready .inner-ring {
+  animation: ringIn .6s ease forwards;
+  animation-delay: .8s;
+}
+
+/* Core power-up */
+@keyframes corePower {
+  from {
+    opacity: 0;
+    transform: scale(.7);
+    box-shadow: none;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow:
+      inset 0 0 16px rgba(127,221,224,.6),
+      0 0 18px rgba(127,221,224,.4);
+  }
+}
+
+.system-ready #energy-core {
+  animation: corePower .8s ease forwards;
+  animation-delay: 1.4s;
+}
+
+/* Wrapper reveal */
+.system-ready #core-wrapper {
+  opacity: 1;
+  transition: opacity .3s ease;
+}
+
+/* ===== UI DETAIL PASS ===== */
+
+/* D1 – Section headers */
+.hud-title{
+  font-size:9px;
+  opacity:.45;
+  letter-spacing:1.5px;
+  margin-top:6px;
+}
+
+/* D2 – Numeric alignment */
+#leftHud *{
+  font-variant-numeric: tabular-nums;
+}
+
+/* D4 – Corner markers */
+.corner{
+  position:fixed;
+  width:10px;height:10px;
+  border:1px solid rgba(127,221,224,.25);
+}
+.corner.tl{top:8px;left:8px;border-right:none;border-bottom:none}
+.corner.tr{top:8px;right:8px;border-left:none;border-bottom:none}
+.corner.bl{bottom:8px;left:8px;border-right:none;border-top:none}
+.corner.br{bottom:8px;right:8px;border-left:none;border-top:none}
+
+/* D5 – Status severity */
+.status{color:rgba(127,221,224,.8)}
+body.hyper .status{color:#c43c3c}
+body.idle .status{opacity:.4}
+
+/* D6 – Mode divider */
+#modeLabel::after{
+  content:"";
+  display:block;
+  height:1px;
+  margin-top:4px;
+  background:rgba(127,221,224,.25);
+}
+
+/* D7 – Core secondary label */
+#energy-core::after{
+  content:"ONLINE";
+  position:absolute;
+  bottom:-14px;
+  font-size:9px;
+  opacity:.5;
+  letter-spacing:1px;
+}
+
+/* D8 – HUD calm in idle */
+body.idle #leftHud,
+body.idle #systemFeed{
+  opacity:.35;
+}
+
+/* D9 – Feed bullet */
+#systemFeed div::before{
+  content:"• ";
+  opacity:.4;
+}
+
+/* ===== ULTRA UI DETAIL PASS (30) ===== */
+
+/* D11–D12 Layout precision */
+#leftHud > * { margin-bottom: 4px; }
+#leftHud { padding-left: 2px; }
+
+/* D13 Core–HUD separator */
+#core-wrapper::before{
+  content:"";
+  position:absolute;
+  top:-20px;
+  left:50%;
+  width:40px;
+  height:1px;
+  background:rgba(127,221,224,.2);
+  transform:translateX(-50%);
+}
+
+/* D14 Text smoothing */
+body { -webkit-font-smoothing: antialiased; }
+
+/* D15 Caps consistency */
+#modeLabel, .status { text-transform: uppercase; }
+
+/* D16 Core inner rim */
+#energy-core::before{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border-radius:50%;
+  border:1px solid rgba(127,221,224,.15);
+}
+
+/* D17 Core center dot */
+#energy-core span::after{
+  content:"";
+  display:block;
+  margin:4px auto 0;
+  width:3px;height:3px;
+  border-radius:50%;
+  background:rgba(127,221,224,.4);
+}
+
+/* D18 Glow falloff */
+#energy-core{
+  filter: drop-shadow(0 0 6px rgba(127,221,224,.35));
+}
+
+/* D19 Label tracking */
+#energy-core span{ letter-spacing:1.5px; }
+
+/* D20 Core state tint */
+body.idle #energy-core{ opacity:.85; }
+
+/* D21 Feed opacity decay */
+#systemFeed div:nth-child(n+4){ opacity:.45; }
+
+/* D22 Feed mono */
+#systemFeed{ font-family:"JetBrains Mono",monospace; }
+
+/* D23 Feed guide line */
+#systemFeed{
+  border-left:1px solid rgba(127,221,224,.15);
+  padding-left:6px;
+}
+
+/* D24 Feed hover */
+#systemFeed div:hover{ opacity:.8; }
+
+/* D25 Feed end cap */
+#systemFeed::after{
+  content:"■";
+  opacity:.25;
+  margin-left:4px;
+}
+
+/* D26 Status prefix */
+.status::before{
+  content:"STATUS : ";
+  opacity:.5;
+}
+
+/* D27 Mode weight */
+#modeLabel{ font-weight:600; }
+
+/* D28 Mode flash */
+.modeFlash{
+  animation:modeFlash .4s ease;
+}
+@keyframes modeFlash{
+  50%{opacity:.4}
+}
+
+/* D29 Baseline align */
+.status, #modeLabel{ line-height:1.2; }
+
+/* D30 Fade curve */
+.status{ transition:opacity .6s ease; }
+
+/* D31 Vignette balance */
+body::before{ box-shadow: inset 0 0 100px rgba(0,0,0,.45); }
+
+/* D32 Corner tuning */
+.corner{ opacity:.45; }
+
+/* D33 Idle desat */
+body.idle{ filter:saturate(.9); }
+
+/* D34 Focus bump */
+body.focus{ filter:saturate(1.05); }
+
+/* D35 Grain clamp */
+body::after{ opacity:.05; }
+
+/* D36 Power dot */
+#batteryBox::before{
+  content:"● ";
+  color:#4caf50;
+}
+
+/* D37 Uptime colon blink */
+@keyframes colonBlink{50%{opacity:0}}
+#uptime::after{
+  content:"";
+}
+
+/* D38 Network pulse refine */
+.mini{ transition:opacity .4s ease; }
+
+/* D39 System ready mark */
+.system-ready #modeLabel::before{
+  content:"✓ ";
+  opacity:.6;
+}
+
+/* D40 Noise clamp */
+*{ mix-blend-mode:normal; }
+
+/* ===== ULTRA SAFE UI DETAIL PASS (D41–D90) ===== */
+
+/* Grid & background refinement */
+body::before { opacity: 0.35; }
+body { letter-spacing: 0.02em; }
+
+/* Core refinement */
+#energy-core {
+  outline: 1px solid rgba(127,221,224,.12);
+  text-shadow: 0 0 6px rgba(127,221,224,.35);
+}
+#energy-core span {
+  text-shadow:
+    0 0 2px rgba(0,0,0,.8),
+    0 0 6px rgba(127,221,224,.3);
+}
+
+/* Ring precision */
+.ring {
+  box-sizing: border-box;
+}
+
+/* HUD typography tuning */
+#leftHud { line-height: 1.35; }
+#timeText { font-weight: 500; }
+#dateText { opacity: .55; }
+
+/* System feed clarity */
+#systemFeed {
+  letter-spacing: .04em;
+  font-size: 10px;
+}
+
+/* Status / mode refinement */
+#modeLabel { opacity: .7; }
+.status { opacity: .65; }
+
+/* Divider consistency */
+.divider {
+  height: 1px;
+  transform: scaleY(.8);
+}
+
+/* Corner polish */
+.corner {
+  border-width: 1px;
+  border-color: rgba(127,221,224,.22);
+}
+
+/* Global noise suppression */
+* {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}

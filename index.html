@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>JARVIS AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- LEFT HUD -->
+  <div id="leftHud">
+    <div id="timeText">--:--</div>
+    <div id="dateText">----</div>
+    <div id="batteryBox">BATTERY : <span id="batteryLevel">--</span>%</div>
+    <div class="divider"></div>
+    <div class="mini">NETWORK : ONLINE</div>
+    <div class="mini">UPTIME : <span id="uptime">00:00</span></div>
+  </div>
+
+  <!-- MODE -->
+  <div id="modeLabel">MODE : STANDBY</div>
+
+  <!-- CORE -->
+  <div id="core-wrapper">
+    <div class="ring outer-ring"></div>
+    <div class="ring mid-ring"></div>
+    <div class="ring inner-ring"></div>
+    <div id="energy-core"><span>JARVIS</span></div>
+  </div>
+
+  <!-- SYSTEM FEED -->
+  <div id="systemFeed"></div>
+
+  <!-- WAKE BUTTON -->
+  <button id="wakeBtn">WAKE</button>
+
+  <div class="status" id="status">Standby</div>
+
+  <audio id="introVoice" src="jarvis.mp3"></audio>
+
+  <script src="script.js"></script>
+  
+</body>
+</html>
